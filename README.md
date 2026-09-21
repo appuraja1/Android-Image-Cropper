@@ -41,7 +41,7 @@ App-level `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'com.github.appuraja1:Android-Image-Cropper:1.0.0'
+    implementation 'com.github.appuraja1:Android-Image-Cropper:1.0.1'
 }
 
 ```
