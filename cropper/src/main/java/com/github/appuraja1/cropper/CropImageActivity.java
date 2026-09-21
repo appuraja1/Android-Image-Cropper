@@ -305,6 +305,10 @@ public class CropImageActivity extends AppCompatActivity
     mCropImageView.rotateImage(degrees);
   }
 
+  /**
+   * Get Android uri to save the cropped image into.
+   * Uses user-provided outputUri, or creates a standard temp file in app cache.
+   */
   protected Uri getOutputUri() {
     Uri outputUri = mOptions.outputUri;
     if (outputUri == null || outputUri.equals(Uri.EMPTY)) {
@@ -316,14 +320,9 @@ public class CropImageActivity extends AppCompatActivity
                           ? ".webp"
                           : ".jpg";
         File tempFile = File.createTempFile("cropped", ext, getCacheDir());
-        outputUri = FileProvider.getUriForFile(
-                this, getPackageName() + ".cropper.fileprovider", tempFile);
-      } catch (Exception e) {
-        try {
-          outputUri = Uri.fromFile(File.createTempFile("cropped", ".jpg", getCacheDir()));
-        } catch (IOException ioException) {
-          throw new RuntimeException("Failed to create temporary output crop file", ioException);
-        }
+        outputUri = Uri.fromFile(tempFile);
+      } catch (IOException e) {
+        throw new RuntimeException("Failed to create temp file for output image", e);
       }
     }
     return outputUri;

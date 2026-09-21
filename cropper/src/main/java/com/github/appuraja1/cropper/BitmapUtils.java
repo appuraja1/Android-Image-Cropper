@@ -251,11 +251,7 @@ final class BitmapUtils {
     try {
       if (uri == null) {
         File tempFile = File.createTempFile("aic_state_store_temp", ".jpg", context.getCacheDir());
-        try {
-          uri = FileProvider.getUriForFile(context, context.getPackageName() + ".cropper.fileprovider", tempFile);
-        } catch (Exception e) {
-          uri = Uri.fromFile(tempFile);
-        }
+        uri = Uri.fromFile(tempFile);
       }
       writeBitmapToUri(context, bitmap, uri, Bitmap.CompressFormat.JPEG, 95);
       return uri;

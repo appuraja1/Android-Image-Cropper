@@ -26,7 +26,6 @@ import android.provider.MediaStore;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import java.io.File;
@@ -211,7 +210,7 @@ public final class CropImage {
   }
 
   /**
-   * Safe FileProvider-based temporary URI creation for camera captures.
+   * Get fallback URI to image received from capture by camera if not supplied by host app.
    */
   public static Uri getCaptureImageOutputUri(@NonNull Context context) {
     File getImage = context.getExternalCacheDir();
@@ -219,12 +218,7 @@ public final class CropImage {
       getImage = context.getCacheDir();
     }
     File file = new File(getImage, "pickImageResult.jpeg");
-    try {
-      return FileProvider.getUriForFile(
-              context, context.getPackageName() + ".cropper.fileprovider", file);
-    } catch (Exception e) {
-      return Uri.fromFile(file);
-    }
+    return Uri.fromFile(file);
   }
 
   public static Uri getPickImageResultUri(@NonNull Context context, @Nullable Intent data) {
