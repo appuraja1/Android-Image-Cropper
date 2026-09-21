@@ -1,6 +1,3 @@
-Aapke modernized codebase, package name (`com.github.appuraja1.cropper`), Java 21 standard, Android 14+ compatibility aur pure black theme ke mutabiq updated `README.md`:
-
-```markdown
 # Android Image Cropper
 
 [![JitPack](https://jitpack.io/v/appuraja1/Android-Image-Cropper.svg)](https://jitpack.io/#appuraja1/Android-Image-Cropper)
@@ -170,6 +167,5 @@ limitations under the License.
 
 ```
 
-```
 
 ```
