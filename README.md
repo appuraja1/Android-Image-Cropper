@@ -1,166 +1,171 @@
-Android Image Cropper
-=======
+# Android Image Cropper
 
-# :triangular_flag_on_post: The Project is NOT currently maintained :triangular_flag_on_post:
+[![JitPack](https://jitpack.io/v/appuraja1/Android-Image-Cropper.svg)](https://jitpack.io/#appuraja1/Android-Image-Cropper)
+[![Android Min SDK](https://img.shields.io/badge/minSdkVersion-21-blue.svg)](https://android-arsenal.com/api?level=21)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)]()
+[![Platform](https://img.shields.io/badge/Platform-Android-green.svg)]()
 
-## Please use **[CanHub's fork](https://github.com/CanHub/Android-Image-Cropper)!**
+A lightweight, modern, and crash-proof image cropping library for Android. Upgraded for modern Android versions (Android 14+ support), pure pitch-black theme, Scoped Storage compatibility, and zero memory leaks.
 
-### Thank everybody for using the library. It was very fun to create and a privilage to help you build awesome apps.
-### The same way I took an unmaintained initial implementation from [edmodo](https://github.com/edmodo/cropper), I'm happy to see [CanHub](https://github.com/CanHub/Android-Image-Cropper) taking it now.
-### Good luck and happy coding :octocat:
+---
 
+## What’s New in This Version
+- **Zero AsyncTask Deprecations:** Migrated completely to modern background threading (`ExecutorService` + main thread `Handler`).
+- **Modern Concurrency & Memory Safety:** Integrated automatic memory recycling and `WeakReference` cleanup to prevent Out Of Memory (OOM) errors.
+- **Android 14+ / API 34 Ready:** Fully updated Scoped Storage permissions (`READ_MEDIA_IMAGES`) and `FileProvider` camera intents.
+- **Pure Black UI:** Pitch-black theme (`#000000`) for the cropping canvas, action bar, and system navigation bars.
+- **Touch & Margin Fixes:** Edge-to-edge breathing room so corner resize handles and menu action text never get clipped.
 
-----
-----
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android--Image--Cropper-green.svg?style=true)](https://android-arsenal.com/details/1/3487)
-[![Build Status](https://travis-ci.org/ArthurHub/Android-Image-Cropper.svg?branch=master)](https://travis-ci.org/ArthurHub/Android-Image-Cropper)
+---
 
-**Powerful** (Zoom, Rotation, Multi-Source), **customizable** (Shape, Limits, Style), **optimized** (Async, Sampling, Matrix) and **simple** image cropping library for Android.
+## Installation
 
-![Crop](https://github.com/ArthurHub/Android-Image-Cropper/blob/master/art/demo.gif?raw=true)
+### 1. Add JitPack Repository
+Root `settings.gradle` (or project root `build.gradle`):
+
+```groovy
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url '[https://jitpack.io](https://jitpack.io)' }
+    }
+}
+
+```
+
+### 2. Add Library Dependency
+
+App-level `build.gradle`:
+
+```groovy
+dependencies {
+    implementation 'com.github.appuraja1:Android-Image-Cropper:1.0.0'
+}
+
+```
+
+---
 
 ## Usage
-*For a working implementation, please have a look at the Sample Project*
 
-[See GitHub Wiki for more info.](https://github.com/ArthurHub/Android-Image-Cropper/wiki)
+### Option 1: Using the Built-in Activity
 
-1. Include the library
+The `CropImageActivity` comes ready to use.
 
- ```
- dependencies {
-     api 'github.edmodo:android-image-cropper:2.8.+'
- }
- ```
+#### Launching the Cropper:
 
-Add permissions to manifest
+```java
+// Option A: Open system picker (Camera/Gallery) directly into Cropper
+CropImage.activity()
+    .setGuidelines(CropImageView.Guidelines.ON)
+    .setCropShape(CropImageView.CropShape.RECTANGLE)
+    .start(this);
 
- ```
- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
- ```
-Add this line to your Proguard config file
+// Option B: Crop an existing Uri
+CropImage.activity(imageUri)
+    .setAspectRatio(1, 1)
+    .setFixAspectRatio(true)
+    .start(this);
+
+// Option C: From a Fragment
+CropImage.activity()
+    .start(requireContext(), this);
 
 ```
--keep class androidx.appcompat.widget.** { *; }
+
+#### Handling the Result:
+
+```java
+@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+        CropImage.ActivityResult result = CropImage.getActivityResult(data);
+        if (resultCode == RESULT_OK) {
+            Uri resultUri = result.getUri();
+            // Use your cropped image Uri
+        } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            Exception error = result.getError();
+        }
+    }
+}
+
 ```
-### Using Activity
 
-2. Add `CropImageActivity` into your AndroidManifest.xml
+---
 
- ```xml
+### Option 2: Using the Custom View
 
-<activity android:name="com.github.appuraja1.cropper.CropImageActivity"
-    android:theme="@style/Base.Theme.AppCompat" /> <!-- optional (needed if default theme has no action bar) -->
- ```
+Embed `CropImageView` inside your layout XML:
 
-3. Start `CropImageActivity` using builder pattern from your activity
- ```java
- // start picker to get image for cropping and then use the image in cropping activity
- CropImage.activity()
-   .setGuidelines(CropImageView.Guidelines.ON)
-   .start(this);
+```xml
+<com.github.appuraja1.cropper.CropImageView
+    android:id="@+id/cropImageView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cropGuidelines="on"
+    app:cropScaleType="fitCenter"
+    app:cropShape="rectangle" />
 
- // start cropping activity for pre-acquired image saved on the device
- CropImage.activity(imageUri)
-  .start(this);
+```
 
- // for fragment (DO NOT use `getActivity()`)
- CropImage.activity()
-   .start(getContext(), this);
- ```
+Control from Java:
 
-4. Override `onActivityResult` method in your activity to get crop result
- ```java
- @Override
- public void onActivityResult(int requestCode, int resultCode, Intent data) {
-   if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-     CropImage.ActivityResult result = CropImage.getActivityResult(data);
-     if (resultCode == RESULT_OK) {
-       Uri resultUri = result.getUri();
-     } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-       Exception error = result.getError();
-     }
-   }
- }
- ```
+```java
+CropImageView cropImageView = findViewById(R.id.cropImageView);
 
-### Using View
-2. Add `CropImageView` into your activity
- ```xml
- <!-- Image Cropper fill the remaining available height -->
- <github.edmodo.cropper.CropImageView
-   xmlns:custom="http://schemas.android.com/apk/res-auto"
-   android:id="@+id/cropImageView"
-   android:layout_width="match_parent"
-   android:layout_height="0dp"
-   android:layout_weight="1"/>
- ```
+// Load image asynchronously
+cropImageView.setImageUriAsync(imageUri);
 
-3. Set image to crop
- ```java
- cropImageView.setImageUriAsync(uri);
- // or (prefer using uri for performance and better user experience)
- cropImageView.setImageBitmap(bitmap);
- ```
+// Perform async crop
+cropImageView.setOnCropImageCompleteListener((view, result) -> {
+    if (result.isSuccessful()) {
+        Bitmap cropped = result.getBitmap();
+    } else {
+        Exception error = result.getError();
+    }
+});
 
-4. Get cropped image
- ```java
- // subscribe to async event using cropImageView.setOnCropImageCompleteListener(listener)
- cropImageView.getCroppedImageAsync();
- // or
- Bitmap cropped = cropImageView.getCroppedImage();
- ```
+cropImageView.getCroppedImageAsync();
 
-## Features
-- Built-in `CropImageActivity`.
-- Set cropping image as Bitmap, Resource or Android URI (Gallery, Camera, Dropbox, etc.).
-- Image rotation/flipping during cropping.
-- Auto zoom-in/out to relevant cropping area.
-- Auto rotate bitmap by image Exif data.
-- Set result image min/max limits in pixels.
-- Set initial crop window size/location.
-- Request cropped image resize to specific size.
-- Bitmap memory optimization, OOM handling (should never occur)!
-- API Level 14.
-- More..
- 
-## Customizations
-- Cropping window shape: Rectangular or Oval (cube/circle by fixing aspect ratio).
-- Cropping window aspect ratio: Free, 1:1, 4:3, 16:9 or Custom.
-- Guidelines appearance: Off / Always On / Show on Toch.
-- Cropping window Border line, border corner and guidelines thickness and color.
-- Cropping background color.
+```
 
-For more information, see the [GitHub Wiki](https://github.com/ArthurHub/Android-Image-Cropper/wiki). 
+---
 
-## Posts
- - [Android cropping image from camera or gallery](http://theartofdev.com/2015/02/15/android-cropping-image-from-camera-or-gallery/)
- - [Android Image Cropper async support and custom progress UI](http://theartofdev.com/2016/01/15/android-image-cropper-async-support-and-custom-progress-ui/)
- - [Adding auto-zoom feature to Android-Image-Cropper](https://theartofdev.com/2016/04/25/adding-auto-zoom-feature-to-android-image-cropper/)
+## ProGuard Rules
 
-## Change log
-*2.8.0*
-- Fix crash on Android O (thx @juliooa)
-- Update to support library to AndroidX (thx @mradzinski)
-- Handle failure when selecting non image file (thx @uncledoc)
-- More translations (thx @jkwiecien, @david-serrano)
+If you are using R8/ProGuard in your application, add the following to `proguard-rules.pro`:
 
-*2.7.0*
-- Update gradle wrapper to 4.4
-- Update support library to 27.1.1 and set is statically! (thx @androideveloper)
-- Fix NPE in activity creation by tools (thx @unverbraucht)
-- More translations (thx @gwharvey, @dlackty, @JairoGeek, @shaymargolis)
+```proguard
+-keep class com.github.appuraja1.cropper.** { *; }
+-keepclassmembers class com.github.appuraja1.cropper.** { *; }
+-dontwarn com.github.appuraja1.cropper.**
 
-See [full change log](https://github.com/ArthurHub/Android-Image-Cropper/wiki/Change-Log).
+```
+
+---
 
 ## License
-Originally forked from [edmodo/cropper](https://github.com/edmodo/cropper).
 
-Copyright 2016, Arthur Teplitzki, 2013, Edmodo, Inc.
+```text
+Copyright 2026 Appu Raja
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in compliance with the   License.
-You may obtain a copy of the License in the LICENSE file, or at:
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+   [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS   IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+```
+
+
+```
