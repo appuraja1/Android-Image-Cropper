@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="crop_image_activity_title" translatable="false">Crop Image</string>
+    <string name="crop_image_menu_rotate_left">Rotate Left</string>
+    <string name="crop_image_menu_rotate_right">Rotate Right</string>
+    <string name="crop_image_menu_crop">Done</string>
+    <string name="crop_image_menu_flip">Flip</string>
+    <string name="crop_image_menu_flip_horizontally">Flip Horizontal</string>
+    <string name="crop_image_menu_flip_vertically">Flip Vertical</string>
+
+    <string name="pick_image_intent_chooser_title">Choose Image</string>
+
+    <string name="crop_image_activity_no_permissions" translatable="false">Permission denied</string>
+
+</resources>

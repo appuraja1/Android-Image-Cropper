@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CropImageView">
+        <!-- Guidelines visibility rules -->
+        <attr name="cropGuidelines">
+            <enum name="off" value="0" />
+            <enum name="onTouch" value="1" />
+            <enum name="on" value="2" />
+        </attr>
+
+        <!-- Initial viewport scale behavior -->
+        <attr name="cropScaleType">
+            <enum name="fitCenter" value="0" />
+            <enum name="center" value="1" />
+            <enum name="centerCrop" value="2" />
+            <enum name="centerInside" value="3" />
+        </attr>
+
+        <!-- Crop window shape -->
+        <attr name="cropShape">
+            <enum name="rectangle" value="0" />
+            <enum name="oval" value="1" />
+        </attr>
+
+        <!-- Interactive flags & zoom behavior -->
+        <attr name="cropAutoZoomEnabled" format="boolean" />
+        <attr name="cropMaxZoom" format="integer" />
+        <attr name="cropMultiTouchEnabled" format="boolean" />
+        <attr name="cropFixAspectRatio" format="boolean" />
+        <attr name="cropAspectRatioX" format="integer" />
+        <attr name="cropAspectRatioY" format="integer" />
+        <attr name="cropInitialCropWindowPaddingRatio" format="float" />
+
+        <!-- Border and corner styling -->
+        <attr name="cropBorderLineThickness" format="dimension" />
+        <attr name="cropBorderLineColor" format="color" />
+        <attr name="cropBorderCornerThickness" format="dimension" />
+        <attr name="cropBorderCornerOffset" format="dimension" />
+        <attr name="cropBorderCornerLength" format="dimension" />
+        <attr name="cropBorderCornerColor" format="color" />
+
+        <!-- Guidelines lines styling -->
+        <attr name="cropGuidelinesThickness" format="dimension" />
+        <attr name="cropGuidelinesColor" format="color" />
+
+        <!-- Dimmed background outside crop selection -->
+        <attr name="cropBackgroundColor" format="color" />
+
+        <!-- Touch snapping and hit testing -->
+        <attr name="cropSnapRadius" format="dimension" />
+        <attr name="cropTouchRadius" format="dimension" />
+
+        <!-- State and UI toggles -->
+        <attr name="cropSaveBitmapToInstanceState" format="boolean" />
+        <attr name="cropShowCropOverlay" format="boolean" />
+        <attr name="cropShowProgressBar" format="boolean" />
+
+        <!-- Crop window limits (View coordinates) -->
+        <attr name="cropMinCropWindowWidth" format="dimension" />
+        <attr name="cropMinCropWindowHeight" format="dimension" />
+
+        <!-- Resulting bitmap dimension limits (Original Bitmap Pixels) -->
+        <attr name="cropMinCropResultWidthPX" format="float|integer|dimension" />
+        <attr name="cropMinCropResultHeightPX" format="float|integer|dimension" />
+        <attr name="cropMaxCropResultWidthPX" format="float|integer|dimension" />
+        <attr name="cropMaxCropResultHeightPX" format="float|integer|dimension" />
+
+        <!-- Inversion flags -->
+        <attr name="cropFlipHorizontally" format="boolean" />
+        <attr name="cropFlipVertically" format="boolean" />
+    </declare-styleable>
+
+</resources>
